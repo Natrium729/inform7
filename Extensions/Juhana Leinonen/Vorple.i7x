@@ -63,26 +63,32 @@ To decide which text is the type of (source - text):
 	if Vorple is not supported:
 		decide on "nothing";
 	let rval be source;
-	if rval is:
-		-- "": decide on "nothing";
-		-- "undefined": decide on "nothing";
-		-- "null": decide on "nothing";
-		-- "true": decide on "truth state";
-		-- "false": decide on "truth state";
-		-- "NaN": decide on "NaN";
-		-- "Infinity": decide on "infinity";
-		-- "-Infinity": decide on "infinity";
+	if rval is "":
+		decide on "nothing";
+	else if rval is "undefined":
+		decide on "nothing";
+	else if rval is "null":
+		decide on "nothing";
+	else if rval is "true":
+		decide on "truth state";
+	else if rval is "false":
+		decide on "truth state";
+	else if rval is "NaN":
+		decide on "NaN";
+	else if rval is "Infinity":
+		decide on "infinity";
+	else if rval is "-Infinity":
+		decide on "infinity";
 	let initial character be character number 1 in rval;
 	let last character be character number (number of characters in rval) in rval;
-	if initial character is:
-		-- "'":
-			if the number of characters in rval is 1 or the last character is not "'":
-				decide on "unknown";
-			decide on "text";
-		-- "[bracket]":
-			decide on "list";
-		-- "{":
-			decide on "object";
+	if initial character is "'":
+		if the number of characters in rval is 1 or the last character is not "'":
+			decide on "unknown";
+		decide on "text";
+	else if initial character is "[bracket]":
+		decide on "list";
+	else if initial character is "{":
+		decide on "object";
 	if word number 1 in rval is "function":
 		decide on "function";
 	if rval matches the regular expression "^\-?\d+(\.\d+)?$":
@@ -113,27 +119,36 @@ To decide which number is text (T - text) converted into a number:
 	repeat with N running from S to L:
 		let C be character number N in T;
 		let D be 0;
-		if C is:			
-			-- "0": let D be 0;
-			-- "1": let D be 1;
-			-- "2": let D be 2;
-			-- "3": let D be 3;
-			-- "4": let D be 4;
-			-- "5": let D be 5;
-			-- "6": let D be 6;
-			-- "7": let D be 7;
-			-- "8": let D be 8;
-			-- "9": let D be 9;
-			-- ".": 
-				let first decimal be text character number N + 1 in T converted into a number;
-				if first decimal > 5:
+		if C is "0":
+			let D be 0;
+		else if C is "1":
+			let D be 1;
+		else if C is "2":
+			let D be 2;
+		else if C is "3":
+			let D be 3;
+		else if C is "4":
+			let D be 4;
+		else if C is "5":
+			let D be 5;
+		else if C is "6":
+			let D be 6;
+		else if C is "7":
+			let D be 7;
+		else if C is "8":
+			let D be 8;
+		else if C is "9":
+			let D be 9;
+		else if C is ".": 
+			let first decimal be text character number N + 1 in T converted into a number;
+			if first decimal > 5:
+				increment result;
+			else if first decimal is 5:
+				if negated is false:
 					increment result;
-				else if first decimal is 5:
-					if negated is false:
-						increment result;
-					otherwise unless T exactly matches the regular expression "\-\d+\.50*":
-						increment result;
-				break;
+				otherwise unless T exactly matches the regular expression "\-\d+\.50*":
+					increment result;
+			break;
 		let result be (result * 10) + D;
 		if previous-result > result:
 			throw Vorple run-time error "Number [T] exceeds Glulx number range";
@@ -309,7 +324,7 @@ Last before reading a command (this is the convert default prompt to Vorple prom
 			now the Vorple prompt is the new prompt;
 			execute JavaScript command "vorple.prompt.setPrefix('[escaped Vorple prompt]')".
 
-Last rule for clarifying the parser's choice (this is the change Vorple prompt when clarifying choice rule):
+Last for clarifying the parser's choice (this is the change Vorple prompt when clarifying choice rule):
 	follow the convert default prompt to Vorple prompt rule;
 	make no decision.
 	
@@ -317,7 +332,7 @@ Last after asking which do you mean (this is the change Vorple prompt when askin
 	follow the convert default prompt to Vorple prompt rule;
 	make no decision.
 
-First rule for printing a parser error when the latest parser error is the I beg your pardon error (this is the change Vorple prompt when input is empty rule):
+First for printing a parser error when the latest parser error is the I beg your pardon error (this is the change Vorple prompt when input is empty rule):
 	follow the convert default prompt to Vorple prompt rule;
 	make no decision.
 	
